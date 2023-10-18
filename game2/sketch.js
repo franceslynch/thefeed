@@ -8,6 +8,7 @@ var meSize = 150;
 var drinkSize = 75;
 var customerSize = 100;
 var gameover = false;
+var song;
 
 /////////////// initialize arrays ///////////////
 var drinks = [];
@@ -16,20 +17,24 @@ var customers = [];
 /////////////// initialize  images ///////////////
 var coffee;
 var me;
+var mehappy;
 var madCustomer;
 
 /////////////// preload files ///////////////
 function preload(){
   coffee = loadImage("coffee.png");
   me = loadImage("me.png");
+  mehappy = loadImage("mehappy.png");
   madCustomer = loadImage("madCustomer.png");
   font = loadFont("PressStart2P-Regular.ttf");
+  song = loadSound("killbill.mp3");
   
 }
 /////////////// setup function ///////////////
 
 function setup() {
   createCanvas(900, 600);
+  song.play();
   player = new Player();
   player.y = height - 150;
 }
@@ -39,34 +44,35 @@ function setup() {
 function draw() {
     background(243, 207, 198);
 
-  player.show();
-  player.update();
+    player.show();
+    player.update();
 
-for (let i = drinks.length - 1; i >= 0; i--) {
-  drinks[i].show();
-  drinks[i].update();
+    for (let i = drinks.length - 1; i >= 0; i--) {
+        drinks[i].show();
+        drinks[i].update();
 
-  // check for drink-customer collisions
-  let customerIndex = drinks[i].hits(customers);
-  if (customerIndex !== -1) {
-    drinks.splice(i, 1);
-    customers.splice(customerIndex, 1);
-    score++;
-  }
-}
-
-
-  // Display and update targets
-  for (let i = customers.length - 1; i >= 0; i--) {
-      customers[i].show();
-      customers[i].update();
-
-
-    // Check for player-target collisions
-      if (player.playerHits(customers[i])) {
-        gameOver();
-      }
+        // check for drink-customer collisions
+        let customerIndex = drinks[i].hits(customers);
+        if (customerIndex !== -1) {
+            drinks.splice(i, 1);
+            customers.splice(customerIndex, 1);
+            score++;
+        } else if (drinks[i].offScreen()) {
+            drinks.splice(i, 1);
+        }
     }
+
+    // Display and update targets
+    for (let i = customers.length - 1; i >= 0; i--) {
+        customers[i].show();
+        customers[i].update();
+
+        // Check for player-target collisions
+        if (player.playerHits(customers[i])) {
+            gameOver();
+        }
+    }
+
 /////////////// display score ///////////////
   if (!gameOver) {
   fill(255,255,255);
@@ -98,14 +104,18 @@ function keyPressed() {
 function gameOver() {
   gameOver = true;
   noLoop();
-  background(123, 110, 106);
+  background(243, 207, 198);
   fill(255);
   textSize(32);
   textAlign(CENTER, CENTER);
   textFont(font);
-  text("Game Over", width / 2, height / 2);
+  image(mehappy, 325, 110, 220, 220);
+  textSize(28);
+  text("oh no the customers got me!", width / 2, 380);
+  textSize(13);
+  text("at least the nice customers felt bad & tipped me.", width / 2, 420);
   textSize(20);
-  text(`Score: ${score}`, width / 2, height / 2 + 40);
+  text(`score: ${score}`, width / 2, 480);
 }
 
 
@@ -187,13 +197,17 @@ class Drink {
     }
   }
   
-hits(customers) {
-  for (let i = 0; i < customers.length; i++) {
-    let d = dist(this.x, this.y, customers[i].x + customers[i].width / 2, customers[i].y + customers[i].height / 2);
-    if (d < this.radius + customers[i].width / 2) {
-      return i; // Return the index of the collided customer
-    }
+  hits(customers) {
+    for (let i = 0; i < customers.length; i++) {
+      let d = dist(this.x, this.y, customers[i].x + customers[i].width / 2, customers[i].y + customers[i].height / 2);
+      if (d < this.radius + customers[i].width / 2) {
+        return i; // Return the index of the collided customer
+      }
   }
   return -1; // No collision with any customer
 }
+  offScreen() {
+    return this.y < 0;
+}
+
 }

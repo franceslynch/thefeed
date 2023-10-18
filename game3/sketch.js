@@ -3,9 +3,8 @@
 /////////////// initialize varibles ///////////////
 
 const gameState = {
-  MENU: 0,
-  GAME: 1,
-  END: 2,
+  GAME: 0,
+  END: 1,
 };
 
 var state = gameState.MENU;
@@ -19,18 +18,21 @@ var activeArrows = [false, false, false, false];
 var noteTravelTime;
 var songDuration;
 var font;
+var song;
 
 /////////////// preload function ///////////////
 
 
 function preload() {
   font = loadFont("PressStart2P-Regular.ttf");
+  song = loadSound("ricflaredrop.mp3");
 } 
 
 /////////////// setup function ///////////////
 
 function setup() {
   createCanvas(900, 600);
+  song.play();
   textAlign(CENTER, CENTER);
   rectMode(CENTER);
   textSize(32); // Move textSize() here
@@ -43,9 +45,6 @@ function setup() {
 function draw() {
   background(243, 207, 198);
   switch (state) {
-    case gameState.MENU:
-      drawMenu();
-      break;
     case gameState.GAME:
       drawGame();
       break;
@@ -53,14 +52,4 @@ function draw() {
       drawEndSequence();
       break;
   }
-}
-
-/////////////// drawmenu function ///////////////
-
-function drawMenu() {
-  background(243, 207, 198);
-  textFont(font);
-  textSize(20);
-  fill(255);
-  text("Press ENTER to start dance practice!", width / 2, height / 2);
 }
