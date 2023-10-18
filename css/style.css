@@ -396,4 +396,9 @@ canvas {
   margin-right: auto;
   align-self: center;
   flex-wrap: wrap;
+  transition: all .2s ease-in-out; 
 }
+
+.play:hover { 
+  transform: scale(1.1); 
+  }
