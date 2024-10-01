@@ -118,6 +118,7 @@ section video:hover {
 footer {
     padding-top: 30px;
     text-align: center;
+    margin-left: 300px;
 }
 
 * {cursor: url(https://cur.cursors-4u.net/holidays/hol-4/hol317.cur), auto !important;}
